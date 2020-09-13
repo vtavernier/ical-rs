@@ -84,11 +84,23 @@ impl Property {
 
 impl fmt::Display for Property {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "name: {}\nparams: {:?}\nvalue: {:?}",
-            self.name, self.params, self.value
-        )
+        // TODO: Support params in display
+        assert!(self.params.is_none());
+
+        write!(f, "{}:", self.name)?;
+
+        // Write escaped value
+        if let Some(val) = self.value.as_ref() {
+            for ch in val.chars() {
+                match ch {
+                    '\n' => write!(f, "\\n"),
+                    '\r' => write!(f, "\\r"),
+                    c => write!(f, "{}", c),
+                }?;
+            }
+        }
+
+        Ok(())
     }
 }
 

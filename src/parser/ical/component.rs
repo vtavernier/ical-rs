@@ -1,5 +1,6 @@
 // Sys mods
 use std::cell::RefCell;
+use std::fmt;
 use std::io::BufRead;
 
 // Internal mods
@@ -30,6 +31,42 @@ impl IcalCalendar {
             free_busys: Vec::new(),
             timezones: Vec::new(),
         }
+    }
+}
+
+impl fmt::Display for IcalCalendar {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "BEGIN:VCALENDAR")?;
+        for property in &self.properties {
+            writeln!(f, "{}", property)?;
+        }
+
+        for event in &self.events {
+            writeln!(f, "{}", event)?;
+        }
+
+        for alarm in &self.alarms {
+            writeln!(f, "{}", alarm)?;
+        }
+
+        for todo in &self.todos {
+            writeln!(f, "{}", todo)?;
+        }
+
+        for journal in &self.journals {
+            writeln!(f, "{}", journal)?;
+        }
+
+        for free_busy in &self.free_busys {
+            writeln!(f, "{}", free_busy)?;
+        }
+
+        for timezone in &self.timezones {
+            writeln!(f, "{}", timezone)?;
+        }
+
+        write!(f, "END:VCALENDAR")?;
+        Ok(())
     }
 }
 
@@ -94,6 +131,18 @@ impl IcalAlarm {
     }
 }
 
+impl fmt::Display for IcalAlarm {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "BEGIN:VALARM")?;
+
+        for property in &self.properties {
+            writeln!(f, "{}", property)?;
+        }
+
+        write!(f, "END:VALARM")
+    }
+}
+
 impl Component for IcalAlarm {
     fn add_property(&mut self, property: Property) {
         self.properties.push(property);
@@ -120,6 +169,22 @@ impl IcalEvent {
             properties: Vec::new(),
             alarms: Vec::new(),
         }
+    }
+}
+
+impl fmt::Display for IcalEvent {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "BEGIN:VEVENT")?;
+
+        for property in &self.properties {
+            writeln!(f, "{}", property)?;
+        }
+
+        for alarm in &self.alarms {
+            writeln!(f, "{}", alarm)?;
+        }
+
+        write!(f, "END:VEVENT")
     }
 }
 
@@ -159,6 +224,18 @@ impl IcalJournal {
     }
 }
 
+impl fmt::Display for IcalJournal {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "BEGIN:VJOURNAL")?;
+
+        for property in &self.properties {
+            writeln!(f, "{}", property)?;
+        }
+
+        write!(f, "END:VJOURNAL")
+    }
+}
+
 impl Component for IcalJournal {
     fn add_property(&mut self, property: Property) {
         self.properties.push(property);
@@ -185,6 +262,22 @@ impl IcalTodo {
             properties: Vec::new(),
             alarms: Vec::new(),
         }
+    }
+}
+
+impl fmt::Display for IcalTodo {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "BEGIN:VTODO")?;
+
+        for property in &self.properties {
+            writeln!(f, "{}", property)?;
+        }
+
+        for alarm in &self.alarms {
+            writeln!(f, "{}", alarm)?;
+        }
+
+        write!(f, "END:VTODO")
     }
 }
 
@@ -226,6 +319,22 @@ impl IcalTimeZone {
     }
 }
 
+impl fmt::Display for IcalTimeZone {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "BEGIN:VTIMEZONE")?;
+
+        for property in &self.properties {
+            writeln!(f, "{}", property)?;
+        }
+
+        for transition in &self.transitions {
+            writeln!(f, "{}", transition)?;
+        }
+
+        write!(f, "END:VTIMEZONE")
+    }
+}
+
 impl Component for IcalTimeZone {
     fn add_property(&mut self, property: Property) {
         self.properties.push(property);
@@ -262,6 +371,18 @@ impl IcalTimeZoneTransition {
     }
 }
 
+impl fmt::Display for IcalTimeZoneTransition {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "BEGIN:VTIMEZONETRANSITION")?;
+
+        for property in &self.properties {
+            writeln!(f, "{}", property)?;
+        }
+
+        write!(f, "END:VTIMEZONETRANSITION")
+    }
+}
+
 impl Component for IcalTimeZoneTransition {
     fn add_property(&mut self, property: Property) {
         self.properties.push(property);
@@ -286,6 +407,18 @@ impl IcalFreeBusy {
         IcalFreeBusy {
             properties: Vec::new(),
         }
+    }
+}
+
+impl fmt::Display for IcalFreeBusy {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "BEGIN:VFREEBUSY")?;
+
+        for property in &self.properties {
+            writeln!(f, "{}", property)?;
+        }
+
+        write!(f, "END:VFREEBUSY")
     }
 }
 
